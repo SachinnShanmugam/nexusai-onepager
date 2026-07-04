@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NexusAI — Unified Customer Intelligence Layer</title>
+  <meta name="description" content="One AI layer that connects WhatsApp, Email, Phone & Website — bringing all customer conversations together with your existing CRM/ERP." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #111827;
+      --bg2:       #1a2236;
+      --surface:   rgba(255,255,255,0.06);
+      --surface2:  rgba(255,255,255,0.10);
+      --border:    rgba(255,255,255,0.13);
+      --blue:      #3b82f6;
+      --cyan:      #06b6d4;
+      --violet:    #8b5cf6;
+      --green:     #22c55e;
+      --orange:    #f97316;
+      --text:      #f1f5f9;
+      --muted:     #9ca3af;
+      --accent-g:  linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+    }
+
+    /* ── PROFESSIONAL CHANNEL TIERS ── */
+    .ch-section { margin-bottom: 40px; }
+    .ch-tier-label {
+      font-size: 0.68rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--muted);
+      margin-bottom: 14px; padding-left: 2px;
+    }
+    .ch-tier-1 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+    .ch-tier-2 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .ch-tier-3 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+
+    .ch-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; border-radius: 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+      cursor: default; position: relative; overflow: hidden;
+    }
+    .ch-item::after {
+      content: ''; position: absolute; inset: 0; opacity: 0;
+      background: radial-gradient(circle at 30% 50%, rgba(255,255,255,0.04) 0%, transparent 70%);
+      transition: opacity 0.22s;
+    }
+    .ch-item:hover { transform: translateY(-3px); box-shadow: 0 12px 36px rgba(0,0,0,0.25); }
+    .ch-item:hover::after { opacity: 1; }
+
+    /* Tier 1 — bigger logo */
+    .ch-tier-1 .ch-item { padding: 18px 20px; border-radius: 16px; }
+    .ch-tier-1 .ch-item:hover { border-color: var(--ch-color, rgba(255,255,255,0.2)); box-shadow: 0 0 0 1px var(--ch-color, transparent), 0 16px 40px rgba(0,0,0,0.3); }
+    .ch-tier-2 .ch-item:hover, .ch-tier-3 .ch-item:hover { border-color: rgba(255,255,255,0.18); }
+
+    .ch-logo {
+      flex: 0 0 40px; width: 40px; height: 40px;
+      border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    }
+    .ch-tier-1 .ch-logo { flex: 0 0 44px; width: 44px; height: 44px; border-radius: 12px; }
+    .ch-logo svg { width: 22px; height: 22px; }
+    .ch-tier-1 .ch-logo svg { width: 26px; height: 26px; }
+
+    .ch-info { min-width: 0; }
+    .ch-name-t {
+      font-size: 0.82rem; font-weight: 700; color: var(--text);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+    .ch-tier-1 .ch-name-t { font-size: 0.9rem; }
+    .ch-sub {
+      font-size: 0.68rem; color: var(--muted); margin-top: 1px;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    }
+
+    /* AI outputs */
+    .ao-card:hover { transform: translateY(-3px); border-color: rgba(59,130,246,0.35); }
+    .ao-ic { font-size: 1.1rem; }
+
+    .ch-arrow-row {
+      display: flex; align-items: center; gap: 16px;
+      margin: 28px 0 24px; justify-content: center;
+    }
+    .ch-arrow-line {
+      flex: 1; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(139,92,246,0.4), transparent);
+      max-width: 200px;
+    }
+    .ai-core-badge {
+      padding: 14px 32px; border-radius: 50px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.18), rgba(139,92,246,0.18));
+      border: 1px solid rgba(139,92,246,0.45);
+      font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 1rem;
+      color: var(--text); white-space: nowrap;
+      box-shadow: 0 0 40px rgba(139,92,246,0.2);
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+    .ai-outputs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+      gap: 12px; margin-top: 0;
+    }
+    .ao-card {
+      display: flex; align-items: center; gap: 10px;
+      padding: 14px 18px; border-radius: 14px;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      font-size: 0.82rem; font-weight: 600; color: var(--text);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    @media(max-width:700px){
+      .ch-tier-1, .ch-tier-2, .ch-tier-3 { grid-template-columns: repeat(2,1fr); }
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    /* ── GLOW BLOBS ── */
+    .blob {
+      position: fixed; border-radius: 50%; filter: blur(120px);
+      opacity: 0.18; pointer-events: none; z-index: 0;
+      animation: float 8s ease-in-out infinite;
+    }
+    .blob-1 { width: 600px; height: 600px; background: #3b82f6; top: -200px; left: -150px; animation-delay: 0s; }
+    .blob-2 { width: 500px; height: 500px; background: #8b5cf6; bottom: -100px; right: -100px; animation-delay: 3s; }
+    .blob-3 { width: 350px; height: 350px; background: #06b6d4; top: 40%; left: 60%; animation-delay: 6s; }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) scale(1); }
+      50%       { transform: translateY(-40px) scale(1.05); }
+    }
+
+    /* ── LAYOUT ── */
+    section { position: relative; z-index: 1; }
+
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky; top: 0; z-index: 100;
+      border-bottom: 1px solid var(--border);
+      background: rgba(17,24,39,0.90);
+      backdrop-filter: blur(20px);
+    }
+    nav .container {
+      display: flex; align-items: center; justify-content: space-between;
+      height: 64px;
+    }
+    .nav-logo {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.4rem; font-weight: 800;
+      background: var(--accent-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      letter-spacing: -0.5px;
+    }
+    .nav-tag {
+      font-size: 0.75rem; font-weight: 500;
+      color: var(--cyan);
+      border: 1px solid rgba(6,182,212,0.3);
+      padding: 4px 12px; border-radius: 20px;
+      background: rgba(6,182,212,0.07);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      padding: 100px 0 80px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(59,130,246,0.1); border: 1px solid rgba(59,130,246,0.25);
+      padding: 6px 16px; border-radius: 30px;
+      font-size: 0.8rem; font-weight: 600; color: var(--blue);
+      margin-bottom: 28px; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .hero-badge .dot {
+      width: 6px; height: 6px; border-radius: 50%; background: var(--blue);
+      animation: pulse-dot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.4; transform: scale(0.6); }
+    }
+
+    h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2.6rem, 6vw, 4.2rem);
+      font-weight: 800; line-height: 1.1;
+      letter-spacing: -1.5px;
+      margin-bottom: 24px;
+    }
+    h1 .grad {
+      background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 50%, #22d3ee 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    }
+
+    .hero-sub {
+      font-size: 1.15rem; color: var(--muted); max-width: 640px;
+      margin: 0 auto 44px; line-height: 1.8;
+    }
+
+    /* ── CHANNEL PILLS ── */
+    .channel-pills {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center; margin-bottom: 60px;
+    }
+    .pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 30px;
+      font-size: 0.875rem; font-weight: 600;
+      border: 1px solid; transition: transform 0.2s, box-shadow 0.2s;
+      cursor: default;
+    }
+    .pill:hover { transform: translateY(-2px); }
+    .pill-wa  { color: #22c55e; border-color: rgba(34,197,94,0.3);  background: rgba(34,197,94,0.07); }
+    .pill-em  { color: #60a5fa; border-color: rgba(96,165,250,0.3); background: rgba(96,165,250,0.07); }
+    .pill-ph  { color: #c084fc; border-color: rgba(192,132,252,0.3);background: rgba(192,132,252,0.07); }
+    .pill-web { color: #fb923c; border-color: rgba(251,146,60,0.3); background: rgba(251,146,60,0.07); }
+    .pill-crm { color: #34d399; border-color: rgba(52,211,153,0.3); background: rgba(52,211,153,0.07); }
+    .pill-ai  { color: #f59e0b; border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.07); }
+
+    .pill svg { width: 18px; height: 18px; }
+
+    /* ── DIVIDER ── */
+    .divider {
+      height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent);
+      margin: 0 auto; max-width: 800px;
+    }
+
+    /* ── PROBLEM ── */
+    #problem { padding: 80px 0; }
+    .section-label {
+      font-size: 0.75rem; font-weight: 700; letter-spacing: 2px;
+      text-transform: uppercase; color: var(--violet);
+      margin-bottom: 12px;
+    }
+    h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 700; letter-spacing: -0.8px;
+      margin-bottom: 16px;
+    }
+    .pain-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px; margin-top: 44px;
+    }
+    .pain-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 28px 28px 22px;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative; overflow: hidden;
+    }
+    .pain-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+      border-radius: 20px 20px 0 0;
+      background: linear-gradient(90deg, var(--card-accent-a), var(--card-accent-b));
+    }
+    .pain-card:hover { border-color: rgba(139,92,246,0.35); transform: translateY(-5px); box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
+
+    /* card accent colour pairs */
+    .pc-1 { --card-accent-a: #3b82f6; --card-accent-b: #8b5cf6; }
+    .pc-2 { --card-accent-a: #f97316; --card-accent-b: #f59e0b; }
+    .pc-3 { --card-accent-a: #8b5cf6; --card-accent-b: #ec4899; }
+    .pc-4 { --card-accent-a: #06b6d4; --card-accent-b: #22c55e; }
+
+    .pain-icon-wrap {
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 12px; font-size: 1.3rem;
+      margin-bottom: 16px; border: 1px solid;
+    }
+    .pain-stat {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.4rem; font-weight: 800; line-height: 1;
+      background: linear-gradient(135deg, var(--card-accent-a), var(--card-accent-b));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      margin-bottom: 4px;
+    }
+    .pain-card h3 {
+      font-size: 0.92rem; font-weight: 700; margin-bottom: 8px;
+      color: var(--text); line-height: 1.3;
+    }
+    .pain-card .pain-desc {
+      font-size: 0.8rem; color: var(--muted); line-height: 1.65; margin-bottom: 16px;
+    }
+    .pain-source {
+      display: inline-flex; align-items: center; gap: 5px;
+      font-size: 0.68rem; font-weight: 600; letter-spacing: 0.3px;
+      color: var(--muted); border: 1px solid var(--border);
+      padding: 3px 10px; border-radius: 20px;
+      background: rgba(255,255,255,0.03);
+      text-decoration: none; transition: color 0.2s, border-color 0.2s;
+    }
+    .pain-source:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* ── SOLUTION ── */
+    #solution { padding: 80px 0; }
+    .solution-intro {
+      text-align: center; max-width: 700px; margin: 0 auto 60px;
+    }
+    .solution-intro p { color: var(--muted); font-size: 1.05rem; }
+
+    /* ── FLOW DIAGRAM ── */
+    .flow-wrap {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 24px; padding: 48px 32px; margin-bottom: 48px;
+      position: relative; overflow: hidden;
+    }
+    .flow-wrap::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(circle at 50% 0%, rgba(59,130,246,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .flow {
+      display: flex; align-items: center; gap: 0;
+      flex-wrap: wrap; justify-content: center;
+    }
+    .flow-node {
+      text-align: center; flex: 0 0 auto;
+    }
+    .flow-node-box {
+      width: 80px; height: 80px; border-radius: 20px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      font-size: 1.8rem; margin: 0 auto 10px;
+      border: 1px solid; transition: transform 0.3s;
+    }
+    .flow-node-box:hover { transform: scale(1.08); }
+    .flow-node p { font-size: 0.72rem; color: var(--muted); font-weight: 600; }
+
+    .fn-wa  { background: rgba(34,197,94,0.1);  border-color: rgba(34,197,94,0.3); }
+    .fn-em  { background: rgba(96,165,250,0.1); border-color: rgba(96,165,250,0.3); }
+    .fn-ph  { background: rgba(192,132,252,0.1);border-color: rgba(192,132,252,0.3);}
+    .fn-web { background: rgba(251,146,60,0.1); border-color: rgba(251,146,60,0.3); }
+    .fn-ai  {
+      width: 100px; height: 100px; border-radius: 50%;
+      background: linear-gradient(135deg,rgba(59,130,246,0.2),rgba(139,92,246,0.2));
+      border-color: rgba(139,92,246,0.5);
+      font-size: 2.2rem;
+      box-shadow: 0 0 40px rgba(139,92,246,0.25);
+      animation: glow-pulse 3s ease-in-out infinite;
+    }
+    @keyframes glow-pulse {
+      0%, 100% { box-shadow: 0 0 30px rgba(139,92,246,0.2); }
+      50%       { box-shadow: 0 0 60px rgba(139,92,246,0.5); }
+    }
+    .fn-crm { background: rgba(52,211,153,0.1); border-color: rgba(52,211,153,0.3); }
+
+    .flow-arrow {
+      font-size: 1.2rem; color: var(--muted); padding: 0 12px;
+      flex: 0 0 auto;
+    }
+    .flow-label {
+      text-align: center; margin-top: 16px;
+      font-size: 0.72rem; color: var(--muted);
+      font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .flow-col { display: flex; flex-direction: column; align-items: center; }
+    .flow-col .flow-nodes { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+
+    /* ── FEATURES ── */
+    #features { padding: 80px 0; }
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .feat-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 32px;
+      transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .feat-card::before {
+      content: ''; position: absolute; inset: 0; opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feat-card:hover { transform: translateY(-6px); }
+    .feat-card:hover::before { opacity: 1; }
+    .fc-blue::before  { background: radial-gradient(circle at 0% 0%, rgba(59,130,246,0.1) 0%, transparent 60%); }
+    .fc-violet::before{ background: radial-gradient(circle at 0% 0%, rgba(139,92,246,0.1) 0%, transparent 60%); }
+    .fc-cyan::before  { background: radial-gradient(circle at 0% 0%, rgba(6,182,212,0.1) 0%, transparent 60%); }
+    .fc-green::before { background: radial-gradient(circle at 0% 0%, rgba(34,197,94,0.1) 0%, transparent 60%); }
+    .fc-orange::before{ background: radial-gradient(circle at 0% 0%, rgba(249,115,22,0.1) 0%, transparent 60%); }
+    .fc-amber::before { background: radial-gradient(circle at 0% 0%, rgba(245,158,11,0.1) 0%, transparent 60%); }
+
+    .feat-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; margin-bottom: 20px; border: 1px solid;
+    }
+    .fi-blue   { background: rgba(59,130,246,0.12); border-color: rgba(59,130,246,0.3); }
+    .fi-violet { background: rgba(139,92,246,0.12); border-color: rgba(139,92,246,0.3); }
+    .fi-cyan   { background: rgba(6,182,212,0.12);  border-color: rgba(6,182,212,0.3); }
+    .fi-green  { background: rgba(34,197,94,0.12);  border-color: rgba(34,197,94,0.3); }
+    .fi-orange { background: rgba(249,115,22,0.12); border-color: rgba(249,115,22,0.3); }
+    .fi-amber  { background: rgba(245,158,11,0.12); border-color: rgba(245,158,11,0.3); }
+
+    .feat-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 10px; }
+    .feat-card p  { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── HOW IT WORKS ── */
+    #how { padding: 80px 0; }
+    .steps {
+      display: flex; flex-direction: column; gap: 0;
+      max-width: 720px; margin: 48px auto 0; position: relative;
+    }
+    .steps::before {
+      content: ''; position: absolute; left: 27px; top: 28px; bottom: 28px;
+      width: 2px; background: linear-gradient(180deg, var(--blue), var(--violet), var(--cyan));
+      opacity: 0.3;
+    }
+    .step {
+      display: flex; gap: 24px; align-items: flex-start;
+      padding: 20px 0;
+    }
+    .step-num {
+      flex: 0 0 56px; height: 56px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Outfit', sans-serif; font-size: 1.1rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      color: white; position: relative; z-index: 1;
+      box-shadow: 0 0 20px rgba(59,130,246,0.3);
+    }
+    .step-body h3 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; padding-top: 14px; }
+    .step-body p  { font-size: 0.85rem; color: var(--muted); line-height: 1.7; }
+
+    /* ── METRICS / IMPACT ── */
+    #impact { padding: 80px 0; text-align: center; }
+    .metrics-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px; margin-top: 48px;
+    }
+    .metric-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 20px; padding: 36px 24px;
+      transition: transform 0.3s, border-color 0.3s;
+    }
+    .metric-card:hover { transform: translateY(-4px); border-color: rgba(59,130,246,0.4); }
+    .metric-num {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.8rem; font-weight: 800;
+      background: var(--accent-g); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      line-height: 1;
+    }
+    .metric-label { font-size: 0.82rem; color: var(--muted); margin-top: 10px; font-weight: 500; }
+
+    /* ── WHO IS IT FOR ── */
+    #who { padding: 80px 0; }
+    .who-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px; margin-top: 40px;
+    }
+    .who-card {
+      border: 1px solid var(--border); border-radius: 16px;
+      padding: 28px 20px; text-align: center;
+      background: var(--surface);
+      transition: all 0.3s;
+    }
+    .who-card:hover { border-color: rgba(6,182,212,0.4); transform: translateY(-4px); }
+    .who-card .icon { font-size: 2rem; margin-bottom: 12px; }
+    .who-card h3 { font-size: 0.9rem; font-weight: 700; margin-bottom: 6px; }
+    .who-card p  { font-size: 0.78rem; color: var(--muted); }
+
+    /* ── INTEGRATIONS ── */
+    #integrations { padding: 60px 0; text-align: center; }
+    .int-label { color: var(--muted); font-size: 0.82rem; margin-bottom: 24px; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; }
+    .int-row {
+      display: flex; flex-wrap: wrap; gap: 12px;
+      justify-content: center; align-items: center;
+    }
+    .int-badge {
+      background: var(--surface); border: 1px solid var(--border);
+      padding: 10px 20px; border-radius: 12px;
+      font-size: 0.82rem; font-weight: 600; color: var(--muted);
+      transition: all 0.2s;
+    }
+    .int-badge:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* ── CTA ── */
+    #cta {
+      padding: 100px 0;
+      text-align: center;
+    }
+    .cta-box {
+      background: linear-gradient(135deg, rgba(59,130,246,0.08) 0%, rgba(139,92,246,0.08) 100%);
+      border: 1px solid rgba(139,92,246,0.25);
+      border-radius: 32px; padding: 72px 40px;
+      position: relative; overflow: hidden;
+    }
+    .cta-box::before {
+      content: ''; position: absolute;
+      top: -100px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .cta-box h2 { font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 16px; }
+    .cta-box p  { color: var(--muted); font-size: 1rem; margin-bottom: 36px; max-width: 500px; margin-left: auto; margin-right: auto; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--blue), var(--violet));
+      color: white; font-weight: 700; font-size: 0.95rem;
+      padding: 14px 36px; border-radius: 50px; border: none;
+      cursor: pointer; text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 32px rgba(59,130,246,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 48px rgba(59,130,246,0.45);
+    }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent; color: var(--muted);
+      font-weight: 600; font-size: 0.95rem;
+      padding: 14px 32px; border-radius: 50px;
+      border: 1px solid var(--border);
+      cursor: pointer; text-decoration: none;
+      transition: all 0.2s; margin-left: 12px;
+    }
+    .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+    /* ── FOOTER ── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 32px 0; text-align: center;
+      position: relative; z-index: 1;
+    }
+    footer p { font-size: 0.8rem; color: var(--muted); }
+    footer strong { color: var(--text); }
+
+    /* ── UTILS ── */
+    .text-center { text-align: center; }
+    .mb-4 { margin-bottom: 16px; }
+    .tag {
+      display: inline-block;
+      background: rgba(139,92,246,0.12); border: 1px solid rgba(139,92,246,0.25);
+      color: #c4b5fd; font-size: 0.72rem; font-weight: 700;
+      padding: 3px 10px; border-radius: 6px; margin-left: 8px;
+      vertical-align: middle; letter-spacing: 0.5px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:640px){
+      .flow-arrow { display: none; }
+      .flow { gap: 16px; }
+      h1 { font-size: 2.2rem; }
+      .btn-secondary { margin-left: 0; margin-top: 12px; }
+      .cta-box { padding: 48px 24px; }
+      .steps::before { left: 23px; }
+    }
+
+    /* ── SCROLL ANIMATIONS ── */
+    .fade-in {
+      opacity: 0; transform: translateY(24px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+  </style>
+</head>
+<body>
+
+  <!-- Background blobs -->
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <!-- ── NAV ── -->
+  <nav>
+    <div class="container">
+      <span class="nav-logo">NexusAI</span>
+      <span class="nav-tag">AI Communication Layer</span>
+    </div>
+  </nav>
+
+  <!-- ── HERO ── -->
+  <section id="hero">
+    <div class="container">
+      <div class="hero-badge">
+        <span class="dot"></span>
+        Built for Businesses That Grow on Relationships
+      </div>
+
+      <h1>
+        Your customers talk everywhere.<br/>
+        <span class="grad">Your AI listens — everywhere.</span>
+      </h1>
+
+      <p class="hero-sub">
+        One intelligent layer that unifies <strong style="color:var(--text)">WhatsApp, Email, Phone, Instagram, Facebook, Telegram, SMS, LinkedIn, Twitter/X, Google Business, Website Chat &amp; Web Forms</strong> — straight into your CRM. Every lead followed up, every conversation captured, every action automated.
+      </p>
+
+      <div class="channel-pills">
+        <span class="pill pill-wa">💬 WhatsApp</span>
+        <span class="pill pill-em">📧 Email</span>
+        <span class="pill pill-ph">📞 Phone</span>
+        <span class="pill pill-web">🌐 Website Chat</span>
+        <span class="pill" style="color:#e1306c;border-color:rgba(225,48,108,0.3);background:rgba(225,48,108,0.07);">📸 Instagram DM</span>
+        <span class="pill" style="color:#1877f2;border-color:rgba(24,119,242,0.3);background:rgba(24,119,242,0.07);">💙 Facebook Messenger</span>
+        <span class="pill" style="color:#29b6f6;border-color:rgba(41,182,246,0.3);background:rgba(41,182,246,0.07);">✈️ Telegram</span>
+        <span class="pill" style="color:#86efac;border-color:rgba(134,239,172,0.3);background:rgba(134,239,172,0.06);">📱 SMS / Text</span>
+        <span class="pill" style="color:#60a5fa;border-color:rgba(96,165,250,0.3);background:rgba(96,165,250,0.07);">🔵 LinkedIn</span>
+        <span class="pill" style="color:#38bdf8;border-color:rgba(56,189,248,0.3);background:rgba(56,189,248,0.07);">🐦 Twitter / X</span>
+        <span class="pill" style="color:#fbbf24;border-color:rgba(251,191,36,0.3);background:rgba(251,191,36,0.07);">🔍 Google Business</span>
+        <span class="pill" style="color:#a78bfa;border-color:rgba(167,139,250,0.3);background:rgba(167,139,250,0.07);">📝 Web Forms</span>
+        <span class="pill pill-crm">📋 CRM / ERP</span>
+        <span class="pill pill-ai">🧠 AI Layer</span>
+      </div>
+
+      <div class="divider"></div>
+    </div>
+  </section>
+
+  <!-- ── PROBLEM ── -->
+  <section id="problem">
+    <div class="container fade-in">
+      <div class="text-center mb-4">
+        <div class="section-label">The Problem</div>
+        <h2>Customer conversations are scattered — and business is leaking</h2>
+        <p style="color:var(--muted);max-width:600px;margin:12px auto 0;font-size:0.95rem;">
+          A lead messages on WhatsApp. Follows up by email. Calls two days later. No one connects the dots — and the deal is gone.
+        </p>
+      </div>
+      <div class="pain-grid">
+
+        <!-- Card 1 -->
+        <div class="pain-card pc-1">
+          <div class="pain-icon-wrap" style="background:rgba(59,130,246,0.1);border-color:rgba(59,130,246,0.25);">⏱️</div>
+          <div class="pain-stat">72%</div>
+          <h3>of a sales rep's week is lost to non-selling tasks</h3>
+          <p class="pain-desc">CRM logging, email triage, meeting prep &amp; copy-pasting data across tools eats up 3 out of every 4 working hours.</p>
+          <a class="pain-source" href="https://www.salesforce.com/resources/research-reports/state-of-sales/" target="_blank" rel="noopener">
+            📄 Salesforce — State of Sales Report
+          </a>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="pain-card pc-2">
+          <div class="pain-icon-wrap" style="background:rgba(249,115,22,0.1);border-color:rgba(249,115,22,0.25);">🕐</div>
+          <div class="pain-stat">42 hrs</div>
+          <h3>average time businesses take to respond to a new lead</h3>
+          <p class="pain-desc">By the time most teams reply, the prospect has already moved on — or signed with a competitor who responded first.</p>
+          <a class="pain-source" href="https://hbr.org/2011/03/the-short-life-of-online-sales-leads" target="_blank" rel="noopener">
+            📄 Harvard Business Review — Lead Response Study
+          </a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="pain-card pc-3">
+          <div class="pain-icon-wrap" style="background:rgba(139,92,246,0.1);border-color:rgba(139,92,246,0.25);">🚫</div>
+          <div class="pain-stat">51%</div>
+          <h3>of all inbound leads are never contacted at all</h3>
+          <p class="pain-desc">System disconnects, volume overload, and lack of follow-up automation mean half your pipeline quietly dies before a single call is made.</p>
+          <a class="pain-source" href="https://www.demandlocal.com/resources/" target="_blank" rel="noopener">
+            📄 DemandLocal — CRM Audit Study
+          </a>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="pain-card pc-4">
+          <div class="pain-icon-wrap" style="background:rgba(6,182,212,0.1);border-color:rgba(6,182,212,0.25);">📉</div>
+          <div class="pain-stat">62%</div>
+          <h3>of callers who get no answer call a competitor instead</h3>
+          <p class="pain-desc">Small businesses miss up to 62% of incoming calls. 80% of those callers won't leave a voicemail — they just move on and cost you the deal.</p>
+          <a class="pain-source" href="https://getaira.io/blog/the-cost-of-missed-calls/" target="_blank" rel="noopener">
+            📄 Aira / Industry Telecom Studies
+          </a>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SOLUTION ── -->
+  <section id="solution" style="background: linear-gradient(180deg, transparent 0%, rgba(59,130,246,0.03) 50%, transparent 100%);">
+    <div class="container fade-in">
+      <div class="solution-intro">
+        <div class="section-label">The Solution</div>
+        <h2>One AI layer. All channels. Zero disruption.</h2>
+        <p>NexusAI sits between your customer touchpoints and your existing CRM — connecting, understanding, and acting on every conversation automatically.</p>
+      </div>
+
+      <!-- TIER 1: Core Channels -->
+      <div class="ch-section">
+        <div class="ch-tier-label">Core Channels</div>
+        <div class="ch-tier-1">
+
+          <!-- WhatsApp -->
+          <div class="ch-item" style="--ch-color:rgba(37,211,102,0.35);">
+            <div class="ch-logo" style="background:#25D166;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347zm-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">WhatsApp</div>
+              <div class="ch-sub">Business API</div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="ch-item" style="--ch-color:rgba(234,67,53,0.35);">
+            <div class="ch-logo" style="background:linear-gradient(135deg,#ea4335,#fbbc04);">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Email</div>
+              <div class="ch-sub">Gmail · Outlook · SMTP</div>
+            </div>
+          </div>
+
+          <!-- Phone -->
+          <div class="ch-item" style="--ch-color:rgba(139,92,246,0.35);">
+            <div class="ch-logo" style="background:linear-gradient(135deg,#7c3aed,#a855f7);">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Phone / IVR</div>
+              <div class="ch-sub">Calls · Transcription</div>
+            </div>
+          </div>
+
+          <!-- Website Chat -->
+          <div class="ch-item" style="--ch-color:rgba(249,115,22,0.35);">
+            <div class="ch-logo" style="background:linear-gradient(135deg,#f97316,#fb923c);">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Website Chat</div>
+              <div class="ch-sub">Live widget · Bot</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TIER 2: Social & Messaging -->
+      <div class="ch-section">
+        <div class="ch-tier-label">Social &amp; Messaging</div>
+        <div class="ch-tier-2">
+
+          <!-- Instagram -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Instagram</div>
+              <div class="ch-sub">Direct Messages</div>
+            </div>
+          </div>
+
+          <!-- Facebook -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:#1877f2;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Facebook</div>
+              <div class="ch-sub">Messenger</div>
+            </div>
+          </div>
+
+          <!-- Telegram -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:#2AABEE;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Telegram</div>
+              <div class="ch-sub">Bot API</div>
+            </div>
+          </div>
+
+          <!-- SMS -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:linear-gradient(135deg,#16a34a,#22c55e);">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">SMS / Text</div>
+              <div class="ch-sub">Twilio · MSG91</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- TIER 3: Professional & Discovery -->
+      <div class="ch-section">
+        <div class="ch-tier-label">Professional &amp; Discovery</div>
+        <div class="ch-tier-3">
+
+          <!-- LinkedIn -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:#0A66C2;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">LinkedIn</div>
+              <div class="ch-sub">Messaging API</div>
+            </div>
+          </div>
+
+          <!-- Twitter / X -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:#000000;">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Twitter / X</div>
+              <div class="ch-sub">DM API v2</div>
+            </div>
+          </div>
+
+          <!-- Google Business -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:white;">
+              <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Google Business</div>
+              <div class="ch-sub">Messages API</div>
+            </div>
+          </div>
+
+          <!-- Web Forms -->
+          <div class="ch-item">
+            <div class="ch-logo" style="background:linear-gradient(135deg,#7c3aed,#6366f1);">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>
+            </div>
+            <div class="ch-info">
+              <div class="ch-name-t">Web Forms</div>
+              <div class="ch-sub">Webhooks · Zapier</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- AI Core -->
+      <div class="ch-arrow-row">
+        <div class="ch-arrow-line"></div>
+        <div class="ai-core-badge">🧠 NexusAI Intelligence Layer</div>
+        <div class="ch-arrow-line"></div>
+      </div>
+
+      <!-- AI Outputs -->
+      <div class="ai-outputs-grid">
+        <div class="ao-card"><span class="ao-ic">📋</span> Sync to CRM / ERP</div>
+        <div class="ao-card"><span class="ao-ic">📝</span> Conversation Summaries</div>
+        <div class="ao-card"><span class="ao-ic">🔔</span> Follow-Up Reminders</div>
+        <div class="ao-card"><span class="ao-ic">🤖</span> Smart Auto-Replies</div>
+        <div class="ao-card"><span class="ao-ic">✅</span> Auto Task Creation</div>
+        <div class="ao-card"><span class="ao-ic">⚙️</span> Custom Automations</div>
+        <div class="ao-card"><span class="ao-ic">📊</span> Lead Scoring</div>
+        <div class="ao-card"><span class="ao-ic">📈</span> Analytics &amp; Reports</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section id="features">
+    <div class="container fade-in">
+      <div class="text-center">
+        <div class="section-label">Core Capabilities</div>
+        <h2>Everything your team needs to never lose a customer again</h2>
+      </div>
+      <div class="feat-grid">
+
+        <div class="feat-card fc-blue">
+          <div class="feat-icon fi-blue">📥</div>
+          <h3>Unified Inbox — All 12 Channels</h3>
+          <p>WhatsApp, Email, Phone, Instagram DM, Facebook Messenger, Telegram, SMS, LinkedIn, Twitter/X, Google Business, Website Chat &amp; Web Forms — every message in one searchable timeline per customer. Zero app-switching.</p>
+        </div>
+
+        <div class="feat-card fc-violet">
+          <div class="feat-icon fi-violet">🧠</div>
+          <h3>AI Conversation Summaries</h3>
+          <p>Every chat, call transcript, and email thread auto-summarized: what was discussed, what was promised, open questions, and the recommended next action — ready before each touchpoint.</p>
+        </div>
+
+        <div class="feat-card fc-cyan">
+          <div class="feat-icon fi-cyan">🔔</div>
+          <h3>Context-Aware Follow-Up Reminders</h3>
+          <p>AI reads intent signals like "I'll think about it" or "call me Friday" and auto-schedules the exact right follow-up for the exact right rep — no manual reminder needed, ever.</p>
+        </div>
+
+        <div class="feat-card fc-green">
+          <div class="feat-icon fi-green">✅</div>
+          <h3>Automatic Task Creation</h3>
+          <p>When a customer says "send me the proposal" or "book a demo", NexusAI instantly creates a CRM task — assigned, due-dated, and linked to the full conversation thread. No rep types a word.</p>
+        </div>
+
+        <div class="feat-card fc-orange">
+          <div class="feat-icon fi-orange">⚙️</div>
+          <h3>Reply-Based Custom Automations</h3>
+          <p>Build no-code workflows triggered by what customers actually say. <em>Example:</em> reply "interested" → move to Qualified → assign senior rep → send brochure → schedule 48hr follow-up. Your logic, fully automated.</p>
+        </div>
+
+        <div class="feat-card fc-amber">
+          <div class="feat-icon fi-amber">🤖</div>
+          <h3>AI Auto-Replies &amp; Draft Suggestions</h3>
+          <p>Handle pricing queries, FAQs, availability, and order status 24/7 in your brand's voice. Or let AI draft replies for human approval — one click to send across every channel simultaneously.</p>
+        </div>
+
+        <div class="feat-card fc-blue">
+          <div class="feat-icon fi-blue">📊</div>
+          <h3>Lead Scoring &amp; Smart Prioritization</h3>
+          <p>AI scores every inbound lead by urgency, intent keywords, channel source, and response history. Your team sees a live ranked list — always knows who to call first and exactly why.</p>
+        </div>
+
+        <div class="feat-card fc-violet">
+          <div class="feat-icon fi-violet">🔗</div>
+          <h3>CRM / ERP Sync — Zero Manual Logging</h3>
+          <p>Conversations, notes, tasks, and deal stage changes sync automatically to Salesforce, HubSpot, Zoho, SAP, Tally, or your custom ERP. Reps never type a single log entry again.</p>
+        </div>
+
+        <div class="feat-card fc-cyan">
+          <div class="feat-icon fi-cyan">📈</div>
+          <h3>Analytics, Sentiment &amp; Reports</h3>
+          <p>Track response times, channel performance, rep productivity, deal velocity, and customer sentiment across every channel in one dashboard. Make data-driven decisions, not gut-feel ones.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── HOW IT WORKS ── -->
+  <section id="how" style="background: linear-gradient(180deg, transparent 0%, rgba(139,92,246,0.03) 50%, transparent 100%);">
+    <div class="container fade-in">
+      <div class="text-center">
+        <div class="section-label">How It Works</div>
+        <h2>Up and running in days, not months</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <h3>Connect Your Channels</h3>
+            <p>Plug in your WhatsApp Business API, email accounts, call logs, and website chat widget. One-click integrations with all major providers — no dev work needed.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <h3>Link Your Existing CRM / ERP</h3>
+            <p>NexusAI integrates with your current tools without replacing them. We sync contacts, deals, and activity logs automatically in real-time.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <h3>AI Learns Your Business</h3>
+            <p>Train NexusAI on your products, FAQs, and tone-of-voice in minutes. It learns your industry context to give smart, relevant responses and summaries.</p>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <h3>Your Team Sells — AI Handles the Rest</h3>
+            <p>From auto-replies and follow-up nudges to conversation summaries and CRM logging — NexusAI runs in the background, making your team 3× more productive.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── IMPACT METRICS ── -->
+  <section id="impact">
+    <div class="container fade-in">
+      <div class="section-label">Expected Impact</div>
+      <h2>Numbers that move the needle</h2>
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-num">3×</div>
+          <div class="metric-label">Faster response time to inbound leads</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">40%</div>
+          <div class="metric-label">Reduction in leads lost to no follow-up</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">5h</div>
+          <div class="metric-label">Hours saved per rep, per week on admin work</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-num">100%</div>
+          <div class="metric-label">Customer context available before every call</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHO IS IT FOR ── -->
+  <section id="who">
+    <div class="container fade-in">
+      <div class="text-center">
+        <div class="section-label">Who Is This For</div>
+        <h2>Built for businesses where relationships drive revenue</h2>
+      </div>
+      <div class="who-grid">
+        <div class="who-card">
+          <div class="icon">🏢</div>
+          <h3>B2B Sales Teams</h3>
+          <p>Multi-touch deals across email and calls</p>
+        </div>
+        <div class="who-card">
+          <div class="icon">🏘️</div>
+          <h3>Real Estate</h3>
+          <p>High-volume WhatsApp inquiries & site visits</p>
+        </div>
+        <div class="who-card">
+          <div class="icon">🏥</div>
+          <h3>Healthcare</h3>
+          <p>Patient follow-ups & appointment coordination</p>
+        </div>
+        <div class="who-card">
+          <div class="icon">🎓</div>
+          <h3>EdTech / Coaching</h3>
+          <p>Admissions & student engagement at scale</p>
+        </div>
+        <div class="who-card">
+          <div class="icon">🛒</div>
+          <h3>E-Commerce / D2C</h3>
+          <p>Order queries, returns & upsell conversations</p>
+        </div>
+        <div class="who-card">
+          <div class="icon">⚙️</div>
+          <h3>Field Services</h3>
+          <p>Job scheduling & customer status updates</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── INTEGRATIONS ── -->
+  <section id="integrations">
+    <div class="container fade-in">
+      <div class="int-label">Integrates with tools you already use</div>
+      <div class="int-row">
+        <span class="int-badge">Salesforce</span>
+        <span class="int-badge">HubSpot</span>
+        <span class="int-badge">Zoho CRM</span>
+        <span class="int-badge">SAP</span>
+        <span class="int-badge">Tally</span>
+        <span class="int-badge">WhatsApp Business API</span>
+        <span class="int-badge">Google Workspace</span>
+        <span class="int-badge">Microsoft 365</span>
+        <span class="int-badge">Twilio</span>
+        <span class="int-badge">Freshdesk</span>
+        <span class="int-badge">Zendesk</span>
+        <span class="int-badge">Custom ERP via API</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA ── -->
+  <section id="cta">
+    <div class="container fade-in">
+      <div class="cta-box">
+        <div class="section-label" style="color:#c4b5fd;">Ready to get started?</div>
+        <h2>Stop losing deals in the gaps between channels.</h2>
+        <p>Join the early access waitlist and be among the first to see NexusAI transform your customer communication.</p>
+        <div>
+          <a href="mailto:hello@nexusai.in" class="btn-primary" id="cta-early-access">
+            ✉️ &nbsp;Request Early Access
+          </a>
+          <a href="#how" class="btn-secondary" id="cta-learn-more">
+            See How It Works
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER ── -->
+  <footer>
+    <div class="container">
+      <p>
+        <strong>NexusAI</strong> &nbsp;·&nbsp; Unified Customer Intelligence &nbsp;·&nbsp;
+        Built with ❤️ for businesses that grow on relationships
+      </p>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll fade-in animation
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+    // Stagger pain cards
+    document.querySelectorAll('.pain-card, .feat-card, .who-card, .metric-card').forEach((card, i) => {
+      card.style.transitionDelay = `${(i % 4) * 80}ms`;
+    });
+  </script>
+</body>
+</html>
